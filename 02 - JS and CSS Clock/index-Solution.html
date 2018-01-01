@@ -6,7 +6,6 @@
 </head>
 <body>
 
-
     <div class="clock">
       <div class="clock-face">
         <div class="hand hour-hand"></div>
@@ -63,12 +62,64 @@
       position: absolute;
       top:50%;
     }
+    
+    .second-hand {
+      
+    }
 
   </style>
 
   <script>
-
-
+    /* globals */
+    const debugOn = true;
+    let debug = (function() {
+      
+      let temp = document.createElement( "div" );
+      let hourDiv = document.createElement( "div" );
+      let minDiv = document.createElement( "div" );
+      let secondDiv = document.createElement( "div" );  
+      
+      temp.appendChild( hourDiv );
+      temp.appendChild( minDiv );
+      temp.appendChild( secondDiv );      
+      
+      function appendDebugger( ele) {
+        debugger;
+        var ele = document.querySelector( ele );
+        ele.appendChild( temp );
+        console.log( "attached" );
+      }
+      return function(){
+        return {
+          appendDebugger: appendDebugger
+        }
+      }
+    })();
+    
+    debug().appendDebugger( "body" );
+    let hands = document.querySelectorAll( "hand" );
+    
+    let hour = document.querySelector( ".hour-hand" );
+    let minute = document.querySelector( ".min-hand" );
+    let second = document.querySelector( ".second-hand" );
+    var sec = 1000;
+    var min = 60 * second;
+    var hr = 60 * minute;
+    let date = new Date();
+    var n = date.getTime();
+       
+    function getHours( hour ) {
+           return hour > 12 ? hour -12 : hour;
+    }
+    if( !debugOn ) {
+      setInterval( function() {
+      
+        var time = new Date();
+        hourDiv.innerText = getHours( time.getHours() );
+        minDiv.innerText = time.getMinutes();
+        secondDiv.innerText = time.getSeconds();
+      }, 1)
+    }
   </script>
 </body>
 </html>
