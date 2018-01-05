@@ -14,7 +14,18 @@
       </div>
     </div>
 
-
+    <form action="" id="form1">
+      <p>Turn the Debugger on/off</p>
+      <div>
+        <label for="on">On</label>
+        <input type="radio" value="true" name="debugger" id="on" ><br>
+        <label for="off">Off</label>
+        <input type="radio" value="false" name="debugger" id="off" checked><br>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
   <style>
     html {
       background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
@@ -66,27 +77,134 @@
     .second-hand {
       
     }
+    
+    .debugger {
+    
+    }
 
   </style>
 
   <script>
     /* globals */
-    const debugOn = true;
+    let debugOn = false;
+    const HOUR = document.querySelector( ".hour-hand" );
+    const MINUTE = document.querySelector( ".min-hand" );
+    const SECOND = document.querySelector( ".second-hand" );
+    const FORM1 = document.getElementById( "form1" );
+    let hands = document.querySelectorAll( ".hand" );   
+    let id = "";    
+    
+    function toggleDebugger( bool ) {
+      var debuggerDiv = document.getElementById( "debugger" );
+      if( bool ) {
+        debuggerDiv.style.visibility = "visible";
+      } else {
+        debuggerDiv.style.visibility = "hidden";
+      }
+    }
+    
+    function submitHandler( evt ) {
+      window.clearInterval( id );
+      let formqueries = new FormData( FORM1 );
+      for( const entry of formqueries ) {
+        var bool = entry[1];
+        console.log( entry );
+      }
+      if( bool === "false" ){
+        debugOn = Boolean( false );
+      } else {
+        debugOn = Boolean( true );
+      }
+      toggleDebugger( debugOn );
+      console.log( "Debug on: " + debugOn );
+      
+      if( !debugOn ){
+        id = setInterval( clockHandler, 1000 );
+        console.log( "interval set..." );        
+      }  else {
+        document.getElementById( "debugger" ).setAttribute
+      }
+      evt.preventDefault();
+    }
+    /*Event Listeners */
+    FORM1.addEventListener( "submit", submitHandler, false );
+    
+    hands.forEach( function( ele ) {
+      ele.style.transformOrigin = "right";
+      console.log( ele );      
+    });
+    
+    function convertSeconds( num ) {
+      return num * 6 + 90;
+    }
+    
+    function convertHours( num ) {
+      return num * ( 360 / 12 ) + 90;
+    }
+    
     let debug = (function() {
       
-      let temp = document.createElement( "div" );
-      let hourDiv = document.createElement( "div" );
-      let minDiv = document.createElement( "div" );
-      let secondDiv = document.createElement( "div" );  
+      function handleOnChange( e ) {
+        // console.log( e );
+        // console.log( e.target.value );
+        e.target.nextSibling.value = e.target.value;
+        if( e.target.name === "seconds" ) {
+          SECOND.style.transform = "rotate(" + convertSeconds( e.target.value ) + "deg)";
+          // console.log( SECOND.style.transform );
+        } else if( e.target.name === "minutes" ) {
+          MINUTE.style.transform = "rotate(" + convertSeconds( e.target.value ) + "deg)";
+        } else if( e.target.name === "hours" ) {
+          HOUR.style.transform = "rotate(" + convertHours( e.target.value ) + "deg)";
+        }
+      }
       
-      temp.appendChild( hourDiv );
-      temp.appendChild( minDiv );
-      temp.appendChild( secondDiv );      
+      function createElements( name, attributes, text ) {
+        var ele = document.createElement( name );
+        for ( attribute in attributes ){
+          ele.setAttribute( attribute, attributes[attribute] );
+        }
+        if( text ) {
+          ele.innerText = text;
+        }
+        return ele;
+      }
+      let formsList = [];
+      
+      let f = createElements( "form", {"method" : "post"} );
+      
+      let secondsLabel = createElements( "label", {"for":"seconds"}, "Seconds" );
+      formsList.push( secondsLabel );
+      let seconds = createElements( "input", {"type": "range", "name":"seconds", "min":"0", "max":"60", "step":"1"});
+      formsList.push( seconds );
+      let minLabel = createElements( "label", {"for":"minutes"}, "Minutes" );
+      formsList.push( minLabel );
+      let minuteInput = createElements( "input", {"type":"range", "name":"minutes", "min":"0", "max":"60","step":"1"});
+      formsList.push( minuteInput );
+      let hourLabel = createElements( "label", {"for":"hour"}, "Hour" );
+      formsList.push( hourLabel );
+      let hourInput = createElements( "input", {"type":"range", "name":"hours", "min":"0", "max":"23", "step":"1"})
+      formsList.push( hourInput );
+      
+      formsList.map( function( ele ) {
+        ele.onchange = handleOnChange;
+        f.appendChild( ele );
+        if( ele.getAttribute( "type" ) === "range" ){
+          let textEle = createElements( "input", {"type":"text", "min":ele.getAttribute("min"), "max":ele.getAttribute("max"), "value":ele.value });
+          f.appendChild( textEle );
+        }
+        f.appendChild( document.createElement("br") );
+      });
+      
+      let temp = document.createElement( "div" );
+      temp.setAttribute( "id", "debugger" );
+      temp.setAttribute( "visibility", "hidden" );
+      temp.appendChild( f );      
       
       function appendDebugger( ele) {
-        debugger;
+        // debugger;
         var ele = document.querySelector( ele );
         ele.appendChild( temp );
+        // ele.appendChild( f );
         console.log( "attached" );
       }
       return function(){
@@ -95,31 +213,37 @@
         }
       }
     })();
-    
+        
     debug().appendDebugger( "body" );
-    let hands = document.querySelectorAll( "hand" );
     
-    let hour = document.querySelector( ".hour-hand" );
-    let minute = document.querySelector( ".min-hand" );
-    let second = document.querySelector( ".second-hand" );
-    var sec = 1000;
-    var min = 60 * second;
-    var hr = 60 * minute;
     let date = new Date();
     var n = date.getTime();
        
     function getHours( hour ) {
            return hour > 12 ? hour -12 : hour;
     }
-    if( !debugOn ) {
-      setInterval( function() {
-      
-        var time = new Date();
-        hourDiv.innerText = getHours( time.getHours() );
-        minDiv.innerText = time.getMinutes();
-        secondDiv.innerText = time.getSeconds();
-      }, 1)
+    
+    function createDegreeString( num ) {
+      return `rotate(${num}deg)`;
     }
+    
+    function clockHandler() {
+      var time = new Date();
+      var hour = getHours( time.getHours() );
+      var minute = time.getMinutes();
+      var second = time.getSeconds();
+      console.log(second);
+          
+      SECOND.style.transform = createDegreeString( convertSeconds( second ) );
+      MINUTE.style.transform = createDegreeString( convertSeconds( minute ) );
+      HOUR.style.transform = createDegreeString( convertHours( hour ) );
+      if( debugOn ){
+        console.log( "seconds: " + time.getSeconds() ); 
+        console.log( createDegreeString( second ) );
+      }
+    }
+    
+    id = setInterval( clockHandler, 1000 );
   </script>
 </body>
 </html>
