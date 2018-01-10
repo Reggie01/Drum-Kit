@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scoped CSS Variables and JS</title>
+</head>
+<body>
+  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+
+  <div class="controls">
+    <label for="spacing">Spacing:</label>
+    <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+
+    <label for="blur">Blur:</label>
+    <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+
+    <label for="base">Base Color</label>
+    <input id="base" type="color" name="base" value="#ffc600">
+  </div>
+  
+  <div id="img-container" class="hl">
+    <img src="https://images.unsplash.com/photo-1474226004578-62743874270f?auto=format&fit=crop&w=750&q=80">
+  </div>
+  <style>
+
+    /*
+      misc styles, nothing to do with CSS variables
+    */
+
+    body {
+      text-align: center;
+      background: #193549;
+      color: white;
+      font-family: 'helvetica neue', sans-serif;
+      font-weight: 100;
+      font-size: 50px;
+    }
+
+    .controls {
+      margin-bottom: 50px;
+    }
+
+    input {
+      width:100px;
+    }
+    
+    img {
+      display: block;
+      margin: auto;
+      padding: 10px;
+      border: 10px;
+      
+    }
+    
+    #img-container {
+      height: 700;
+      width: 1000;
+      background-color: var( --main-bg-color );
+    }
+    :root {
+      --main-bg-color: brown;
+    }
+    .hl {
+      color: var( --main-bg-color );
+    }
+  </style>
+
+  <script>
+    let spacing = document.getElementById( "spacing" );
+    let blur = document.getElementById( "blur" );
+    let base = document.getElementById( "base" );
+    let hl = document.getElementsByClassName( "hl" );
+    let img = document.querySelector( "img" );
+    
+    
+    
+    let spacingOnchange = function( e ) {
+      console.log( "spacing : " + e.target.value );
+      img.style.transform = `translate( ${e.target.value}px, ${e.target.value}px )`;
+      console.log( `translate( ${e.target.value}, ${e.target.value} )` );
+      console.log( img.style );
+    }
+    
+    let blurOnchange = function( e ) {
+      console.log( "blur : " + e.target.value );
+      img.style.filter = `blur( ${ e.target.value }px )`;
+    }
+    
+    let baseOnChange = function( e ) {
+      console.log( "base : " + e.target.value );
+      for( let idx = 0; idx < hl.length; idx++ ){
+        console.log( "item : " + idx );
+        hl.item( idx ).style.setProperty( "--main-bg-color", e.target.value );
+        console.log( "Get property : " + getComputedStyle( hl.item( idx ) ).getPropertyValue( "--main-bg-color" ) );
+      }
+    }
+    spacing.addEventListener( "change", spacingOnchange );
+    blur.addEventListener( "change", blurOnchange );
+    base.addEventListener( "change", baseOnChange );
+    
+  </script>
+
+</body>
+</html>
