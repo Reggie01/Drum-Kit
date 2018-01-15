@@ -6,6 +6,7 @@
 </head>
 <body>
   <p><em>Psst: have a look at the JavaScript Console</em> 💁</p>
+  <script src="..\Logger.js"></script>
   <script>
     // Get your shorts on - this is an array workout!
     // ## Array Cardio Day 1
@@ -35,51 +36,59 @@
       return people.year >1499 && people.year < 1600;
     });
     
-    console.table( fiteenhundreds );
     // Array.prototype.map()
     // 2. Give us an array of the inventors' first and last names
     let firstandlast = inventors.map( function( curr ) {
       return { "first": curr.first, "last": curr.last };
     });
-    console.table( firstandlast );
+   
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+   
     let sortedBirthdate = inventors.sort( function( first, last ) {
-      return first.year - last.year;
+      
+      return ( first.year - last.year ) > 0 ? 1 : -1;
     });
-    console.table( sortedBirthdate );
+    if( DEBUGGER ){
+      console.log( LOGGER.createHeading( "sortedBirthdate" ) );
+      console.table( sortedBirthdate );
+    }
+    
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live?
     let yearsLived = inventors.reduce( function( acc, curr ) {
-                                // console.log( "typeof year: " + typeof curr.year );
-                                // console.log( "typeof passed: " + typeof curr.passed );
-                                // console.log( "Years: " + ( curr.passed - curr.year) );
-                                // console.log( "Acc: " + acc );
                                 acc = acc + ( curr.passed - curr.year );
                                 return acc;
                                 }, 0 );
-    console.log( "Years lived: " + yearsLived );
+    
     // 5. Sort the inventors by years lived
-    let old = inventors.sort( function( a, b ) {
-                                                  return ( a.passed - a.year ) - ( b.passed - b.year );
-                                                }).map( function( a ) {
-                                                       a.age = a.passed - a.year;
-                                                       return a;
-                                                });
-    console.log( old );
+    let old = inventors.sort( function( inventorA, inventorB ) {
+                                              let inventorAYearsLived = inventorA.passed - inventorA.year;
+                                              let inventorBYearsLived = inventorB.passed - inventorB.year;
+                                              let differenceInAge = inventorAYearsLived - inventorBYearsLived;
+                                              return differenceInAge < 0 ? -1: 1
+                                         });
+    if( DEBUGGER ) {
+      LOGGER.createHeading( "Sort the inventors by years lived" );
+      console.table( old );
+    }                                     
+    
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
 
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
-    let lastName = people.sort( function( a, b ) {
-                               //console.log( "a first name: " + a.split(",")[0].toLowerCase() + ", b second name : " + ( b.split(",")[0] ).toLowerCase() + "\n" );
-                               //debugger;
-                               return (a.split(",")[0]).toLowerCase() - ( b.split(",")[0] ).toLowerCase();
-                             });
-    console.log( "lastName w/comparator function : " + lastName );
-    console.log( "lastName : " + people.sort() );
+    let lastName = people.sort( function( personA, personB ) {
+                                                    let personALastName = personA.split(",")[0];
+                                                    let personBLastName = personB.split(",")[0];
+                                                    
+                                                    return personALastName < personBLastName ? -1 : 1;
+                                                });
+    if( DEBUGGER ) {
+      console.log( LOGGER.createHeading( "Sort the people alphabetically by last name" ) );
+      console.table( lastName );
+    }
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
@@ -92,7 +101,7 @@
                                                      }
                                                      return acc;
                                                    }, {});
-    console.log( dataSums );
+    
   </script>
 </body>
 </html>
