@@ -114,14 +114,35 @@
   </div>
 
   <script>
-    let panel1 = document.querySelector( "panel1" );
-    let panel2 = document.querySelector( "panel2" );
-    let panel3 = document.querySelector( "panel3" );
-    let panel4 = document.querySelector( "panel4" );
-    let panel5 = document.querySelector( "panel5" );
+    let panel1 = document.querySelector( ".panel1" );
+    let panel2 = document.querySelector( ".panel2" );
+    let panel3 = document.querySelector( ".panel3" );
+    let panel4 = document.querySelector( ".panel4" );
+    let panel5 = document.querySelector( ".panel5" );
+    let panels = [ panel1, panel2, panel3, panel4, panel5 ];
+    let removePropertyFromPanel = function( panel ) {
+              panel.style.removeProperty( "flex-grow");
+            };
     panel1.addEventListener( "click", function( e ) {
-            console.log("E: " + e );
-    })
+            
+    });
+    panel2.addEventListener( "click", function( e ) {
+            e.preventDefault();
+            panels.map( removePropertyFromPanel );
+            this.style.setProperty( "flex-grow", "2" );
+    });
+    panel3.addEventListener( "click", function( e ) {
+            panels.map( removePropertyFromPanel );
+            this.style.setProperty( "flex-grow", "2" );
+    });
+    panel4.addEventListener( "click", function( e ) {
+            panels.map( removePropertyFromPanel );
+            this.style.setProperty( "flex-grow", "2" );
+    });
+    panel5.addEventListener( "click", function( e ) {
+            panels.map( removePropertyFromPanel );
+            this.style.setProperty( "flex-grow", "2" );
+    });
   </script>
 
 
